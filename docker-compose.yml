@@ -1,0 +1,33 @@
+version: "3.3"
+services:
+  rabbitmq:
+    image: rabbitmq:3.8-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+        - 5673:5672
+        - 15673:15672
+    volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+        - rabbitmq_nodejs
+
+  postgres:
+    image: postgres:14.5
+    container_name: postgres
+    environment:
+      POSTGRES_DB: "boti-products"
+      POSTGRES_USER: "boti"
+      POSTGRES_PASSWORD: "boti"
+    ports:
+      - 5432:5432
+
+  redis:
+    image: "redis:5-buster"
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+networks:
+  rabbitmq_nodejs:
+    driver: bridge
