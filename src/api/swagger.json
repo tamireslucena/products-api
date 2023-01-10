@@ -1,0 +1,311 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Swagger Products API",
+        "description": "Product management API."
+    },
+    "host": "localhost:3333",
+    "basePath": "/api/v1",
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "User and authentication related endpoints"
+        },
+        {
+            "name": "Products",
+            "description": "Product management related endpoints"
+        }
+    ],
+    "schemes": [
+        "http"
+    ],
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "in": "header",
+            "name": "authorization",
+            "description": "Provide a token to grant access to the product management endpoints in the form 'Bearer token'"
+        }
+    },
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/authentication/users": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Creates a new user",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "credentials",
+                        "description": "The user email and password",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserCreationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User created",
+                        "schema": {
+                            "$ref": "#/definitions/UserCreationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid data to create user"
+                    }
+                }
+            }
+        },
+        "/authentication": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Authenticates a previously created user",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "credentials",
+                        "description": "The user email and password",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserCreationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User created",
+                        "schema": {
+                            "$ref": "#/definitions/UserAuthenticationResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials"
+                    }
+                }
+            }
+        },
+        "/products": {
+
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Enqueues a new product for creation",
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "user",
+                        "description": "The product name and price",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ProductCreationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Product queued for creation"
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Returns a previously created product",
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product found",
+                        "schema": {
+                            "$ref": "#/definitions/ProductResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                }
+            }
+        },
+        "/products/{id}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Returns a previously created product",
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The product id",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product found",
+                        "schema": {
+                            "$ref": "#/definitions/ProductResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Enqueues a previously created product for update",
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The product id",
+                        "required": true,
+                        "example": 1
+                    },
+                    {
+                        "in": "body",
+                        "name": "user",
+                        "description": "The product name and price",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ProductCreationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Product queued for update"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Enqueues a previously created product for deletion",
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The product id",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Product queued for deletion"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "UserCreationRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "tlucena"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "P@ss123"
+                }
+            }
+        },
+        "UserCreationResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "tlucena@gmail.com"
+                }
+            }
+        },
+        "UserAuthenticationResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...0B6_xZmjGCgu54s"
+                }
+            }
+        },
+        "ProductCreationRequest": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Perfume"
+                },
+                "price": {
+                    "type": "number",
+                    "example": 99.99
+                }
+            }
+        },
+        "ProductResponse": {
+            "type": "object",
+            "properties": {
+                "product": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "number",
+                            "example": 1
+                        },
+                        "name": {
+                            "type": "string",
+                            "example": "Perfume"
+                        },
+                        "price": {
+                            "type": "number",
+                            "example": 99.99
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
